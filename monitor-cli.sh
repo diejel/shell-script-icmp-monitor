@@ -36,19 +36,45 @@ vv3=$3; indirect_var3=${vv3}[@]; let count3=$( echo "${!indirect_var3}" | wc -w 
 for (( i=1;i <=$count1 ; i+=2 ))
 do
     #echo -ne '\007' (To make a sound [uncomment] )
-    let "i_inc = i + 1"; let "i_v2 = i_inc/2"; let "i_v3 = i_v2"
-    value_choosen_iv1=$(echo ${!indirect_var1} | cut -d" " -f$i); value_choosen_icv1=$(echo ${!indirect_var1} | cut -d" " -f$i_inc);
-	value_choosen_iv2=$(echo ${!indirect_var2} | cut -d, -f$i_v2); value_choosen_icv2=$(echo ${!indirect_var2} | cut -d, -f$i_inc);
-    value_choosen_iv3=$(echo ${!indirect_var3} | cut -d, -f$i_v3); value_choosen_icv3=$(echo ${!indirect_var3} | cut -d, -f$i_inc);
+    ((i_inc = i + 1)); ((i_v2 = i_inc/2)); ((i_v3 = i_v2))
+    value_choosen_iv1=$(echo "${!indirect_var1}" | cut -d" " -f$i); value_choosen_icv1=$(echo "${!indirect_var1}" | cut -d" " -f$i_inc);
+	value_choosen_iv2=$(echo "${!indirect_var2}" | cut -d, -f$i_v2); 
+    #value_choosen_icv2=$(echo "${!indirect_var2}" | cut -d, -f$i_inc);
+    value_choosen_iv3=$(echo "${!indirect_var3}" | cut -d, -f$i_v3);
+    # value_choosen_icv3=$(echo "${!indirect_var3}" | cut -d, -f$i_inc);
 		
 	# ----------Latencies mean calculations ----------
-    lat1=$(ping -c $pkts $value_choosen_iv1 | grep -i 'rtt' | cut -d/ -f5 2> /dev/null);
+    #lat1=$(ping -c $pkts $value_choosen_iv1 | grep -i 'rtt' | cut -d/ -f5 2> /dev/null);
    
+    #if [ $lat1 ]; then lat1=$lat1; status="OK"; else lat1="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
+
+    function get_latency_depending_os(){
+        target_IP=$1;
+        case $(uname) in
+            Linux*)
+                latency=$(ping -c $pkts "${target_IP}" | grep -i 'rtt' | cut -d/ -f5 2> /dev/null)
+                echo "${latency}"
+                ;;
+            MINGW*|CYGWIN*)
+                latency=$(ping -n $pkts "${target_IP}" | tail -n 1 | cut -d" " -f13 | grep -Eo "[0-9]{1,}" 2> /dev/null)
+                echo "${latency}"
+                ;;
+            *)
+                echo "Unsupported OS"
+                ;;
+        esac
+    }
+    lat1=$(get_latency_depending_os "${value_choosen_iv1}");
+    lat2=$(get_latency_depending_os "${value_choosen_icv1}");
+
     if [ $lat1 ]; then lat1=$lat1; status="OK"; else lat1="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
-
-    lat2=$(ping -c $pkts $value_choosen_icv1 | grep -i 'rtt' | cut -d/ -f5 2> /dev/null);
-
     if [ $lat2 ]; then lat2=$lat2; status="OK"; else lat2="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
+
+    #lat1=$(ping -c $pkts $value_choosen_iv1 | grep -i 'rtt' | cut -d/ -f5 2> /dev/null);
+    #if [ $lat1 ]; then lat1=$lat1; status="OK"; else lat1="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
+
+    #lat2=$(ping -c $pkts $value_choosen_icv1 | grep -i 'rtt' | cut -d/ -f5 2> /dev/null);
+    #if [ $lat2 ]; then lat2=$lat2; status="OK"; else lat2="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
 
     if ((  $( echo " $lat1 < $lim_vg " | bc -l 2> /dev/null )  )) ; then
         lat1=" $nclr $green $lat1 ms $nclr ";
@@ -66,7 +92,7 @@ do
         lat2="$nclr $red $lat2 ms $nclr";
     fi
 
-    let "bulet = i_inc/2"; echo -e "Con-status: $value_choosen_iv2\r";
+    ((bulet = i_inc/2)); echo -e "Con-status: $value_choosen_iv2\r";
     echo -e " $bulet)\t$value_choosen_iv3 : " "$value_choosen_iv1" "-->\t" "TTL:"$lat1 "\t" "$value_choosen_icv1" "-->\t" "TTL:"$lat2 " | [$status]" "\r"
     echo -e "\n\r";
     
