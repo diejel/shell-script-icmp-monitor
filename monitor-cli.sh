@@ -64,9 +64,6 @@ do
     lat1=$(get_latency_depending_os "${value_choosen_iv1}");
     lat2=$(get_latency_depending_os "${value_choosen_icv1}");
 
-    #if [ $lat1 ]; then lat1=$lat1; status="OK"; else lat1="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
-    #if [ $lat2 ]; then lat2=$lat2; status="OK"; else lat2="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
-
     function grade_latency(){
         lat=$1
         if [ -n "${lat}" ]; then
@@ -95,23 +92,7 @@ do
 
     read latency1 status1 <<< "$(grade_latency "${lat1}")"
     read latency2 status2 <<< "$(grade_latency "${lat2}")"
-    #lat1=$(grade_latency "${lat1}")
-    # if ((  "${lat1}" < "${lim_vg}"  )) ; then
-    #     lat1=" $nclr $green $lat1 ms $nclr ";
-    # elif (( "${lat1}" > "${lim_vg}" && "${lat1}" < "${lim_vm}" )); then
-    #     lat1="$nclr $yellow $lat1 ms $nclr";
-    # elif ((  "${lat1}" > "${lim_vm}" )); then
-    #     lat1=" $nclr $red $lat1 ms $nclr ";
-    # fi
 
-    # if ((  $( echo " $lat2 < $lim_vg " | bc -l 2> /dev/null )  )) ; then
-    #     lat2="$nclr $green $lat2 ms $nclr";
-    # elif ((  $( echo " $lat2 > $lim_vg && $lat2 < $lim_vm " | bc -l 2> /dev/null ) )); then
-    #     lat2="$nclr $yellow $lat2 ms $nclr";
-    # elif ((  $( echo " $lat2 > $lim_vm " | bc -l 2> /dev/null) )); then
-    #     lat2="$nclr $red $lat2 ms $nclr";
-    # fi
-    #lat2=$(grade_latency "${lat2}")
     
     ((bulet = i_inc/2)); echo -e "Con-status: $value_choosen_iv2\r";
     echo -e " $bulet)\t$value_choosen_iv3 : " "$value_choosen_iv1" "-->\t" "TTL:""${latency1}" " | [$status1]""\t" "$value_choosen_icv1" "-->\t" "TTL:""${latency2}" " | [$status2]" "\r"
