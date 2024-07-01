@@ -44,9 +44,6 @@ do
     # value_choosen_icv3=$(echo "${!indirect_var3}" | cut -d, -f$i_inc);
 		
 	# ----------Latencies mean calculations ----------
-    #lat1=$(ping -c $pkts $value_choosen_iv1 | grep -i 'rtt' | cut -d/ -f5 2> /dev/null);
-   
-    #if [ $lat1 ]; then lat1=$lat1; status="OK"; else lat1="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
 
     function get_latency_depending_os(){
         target_IP=$1;
@@ -70,12 +67,7 @@ do
     if [ $lat1 ]; then lat1=$lat1; status="OK"; else lat1="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
     if [ $lat2 ]; then lat2=$lat2; status="OK"; else lat2="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
 
-    #lat1=$(ping -c $pkts $value_choosen_iv1 | grep -i 'rtt' | cut -d/ -f5 2> /dev/null);
-    #if [ $lat1 ]; then lat1=$lat1; status="OK"; else lat1="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
-
-    #lat2=$(ping -c $pkts $value_choosen_icv1 | grep -i 'rtt' | cut -d/ -f5 2> /dev/null);
-    #if [ $lat2 ]; then lat2=$lat2; status="OK"; else lat2="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
-
+ 
     if ((  $( echo " $lat1 < $lim_vg " | bc -l 2> /dev/null )  )) ; then
         lat1=" $nclr $green $lat1 ms $nclr ";
     elif ((  $( echo " $lat1 > $lim_vg && $lat1 < $lim_vm " | bc -l 2> /dev/null ) )); then
