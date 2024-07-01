@@ -2,7 +2,7 @@
 clear
 #------ SECTION DEVICES 001-008 [HQ DEVICES]--------------
 DEVICE001=( 8.8.8.8 8.8.4.4 )
-DEVICE002=( 200.221.11.101 187.120.48.47 )
+DEVICE002=( 200.48.225.130 200.48.225.146 )
 DEVICE003=( 187.75.155.116 177.104.118.42 )
 DEVICE004=( 200.11.52.202 1.1.1.1 )
 DEVICE005=( 186.225.45.138 200.252.235.20 )
@@ -15,12 +15,12 @@ DEVICES_NAME=( "DEVICE001" , "DEVICE002" , "DEVICE003" , "DEVICE004" ,  "DEVICE0
 DEVICES_NAME_FULL=( "Descr. DEVICE001" , "Desc. DEVICE002" , "Desc. DEVICE003" , "Desc. DEVICE004" , "Desc. DEVICE005" , "Desc. DEVICE006" , "Desc. DEVICE007" , "Desc. DEVICE008" )
 
 #---- ----- SECTION DEVICE009 [Branch Office 1]----------------------
-DEVICE009=( 200.194.198.76 131.196.220.10 )
+DEVICE009=( 1.1.1.1 8.8.8.8 )
 DEVICE009_NAC_NAME=( "IP_1" "IP_2" )
 DEVICE009_NAC_NAME_FULL=( "DEVICE009" )
 
 #---------- SECTION DEVICE010 [Branch Office 2]-------------------------------
-DEVICE010=( 190.108.85.3  45.173.200.10 )
+DEVICE010=( 200.48.225.130 200.48.225.146 )
 DEVICE010_NAME=( "IP_1" "IP_2" )
 DEVICE010_NAME_FULL=( "DEVICE010" )
 
@@ -64,28 +64,57 @@ do
     lat1=$(get_latency_depending_os "${value_choosen_iv1}");
     lat2=$(get_latency_depending_os "${value_choosen_icv1}");
 
-    if [ $lat1 ]; then lat1=$lat1; status="OK"; else lat1="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
-    if [ $lat2 ]; then lat2=$lat2; status="OK"; else lat2="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
+    #if [ $lat1 ]; then lat1=$lat1; status="OK"; else lat1="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
+    #if [ $lat2 ]; then lat2=$lat2; status="OK"; else lat2="$nclr $blkn $alarm_bg [Fora do Ar] $nclr"; status="DOWN"; fi
 
- 
-    if ((  $( echo " $lat1 < $lim_vg " | bc -l 2> /dev/null )  )) ; then
-        lat1=" $nclr $green $lat1 ms $nclr ";
-    elif ((  $( echo " $lat1 > $lim_vg && $lat1 < $lim_vm " | bc -l 2> /dev/null ) )); then
-        lat1="$nclr $yellow $lat1 ms $nclr";
-    elif ((  $( echo " $lat1 > $lim_vm " | bc -l 2> /dev/null ) )); then
-        lat1=" $nclr $red $lat1 ms $nclr ";
-    fi
+    function grade_latency(){
+        lat=$1
+        if [ -n "${lat}" ]; then
+            status="OK"
+        else
+            status="DOWN"
+            represent_status=" $nclr $blkn $alarm_bg [Fora do Ar] $nclr"
+            echo -e "${represent_status} ${status}"
+            return
+        fi
+        if ((  "${lat}" < "${lim_vg}"  )) ; then
+            status="OK"
+            represent_status=" $nclr $green $lat ms $nclr ";
+            echo -e "${represent_status} ${status}"
+        elif (( "${lat}" > "${lim_vg}" && "${lat}" <= "${lim_vm}" )); then
+            status="WARNING"
+            represent_status="$nclr $yellow $lat ms $nclr";
+            echo -e "${represent_status} ${status}"
+        elif ((  "${lat}" > "${lim_vm}" )); then
+            status="CRITICAL"
+            represent_status=" $nclr $red $lat ms $nclr ";
+            echo -e "${represent_status} ${status}"
+        fi
+    }
 
-    if ((  $( echo " $lat2 < $lim_vg " | bc -l 2> /dev/null )  )) ; then
-        lat2="$nclr $green $lat2 ms $nclr";
-    elif ((  $( echo " $lat2 > $lim_vg && $lat2 < $lim_vm " | bc -l 2> /dev/null ) )); then
-        lat2="$nclr $yellow $lat2 ms $nclr";
-    elif ((  $( echo " $lat2 > $lim_vm " | bc -l 2> /dev/null) )); then
-        lat2="$nclr $red $lat2 ms $nclr";
-    fi
 
+    read latency1 status1 <<< "$(grade_latency "${lat1}")"
+    read latency2 status2 <<< "$(grade_latency "${lat2}")"
+    #lat1=$(grade_latency "${lat1}")
+    # if ((  "${lat1}" < "${lim_vg}"  )) ; then
+    #     lat1=" $nclr $green $lat1 ms $nclr ";
+    # elif (( "${lat1}" > "${lim_vg}" && "${lat1}" < "${lim_vm}" )); then
+    #     lat1="$nclr $yellow $lat1 ms $nclr";
+    # elif ((  "${lat1}" > "${lim_vm}" )); then
+    #     lat1=" $nclr $red $lat1 ms $nclr ";
+    # fi
+
+    # if ((  $( echo " $lat2 < $lim_vg " | bc -l 2> /dev/null )  )) ; then
+    #     lat2="$nclr $green $lat2 ms $nclr";
+    # elif ((  $( echo " $lat2 > $lim_vg && $lat2 < $lim_vm " | bc -l 2> /dev/null ) )); then
+    #     lat2="$nclr $yellow $lat2 ms $nclr";
+    # elif ((  $( echo " $lat2 > $lim_vm " | bc -l 2> /dev/null) )); then
+    #     lat2="$nclr $red $lat2 ms $nclr";
+    # fi
+    #lat2=$(grade_latency "${lat2}")
+    
     ((bulet = i_inc/2)); echo -e "Con-status: $value_choosen_iv2\r";
-    echo -e " $bulet)\t$value_choosen_iv3 : " "$value_choosen_iv1" "-->\t" "TTL:"$lat1 "\t" "$value_choosen_icv1" "-->\t" "TTL:"$lat2 " | [$status]" "\r"
+    echo -e " $bulet)\t$value_choosen_iv3 : " "$value_choosen_iv1" "-->\t" "TTL:""${latency1}" " | [$status1]""\t" "$value_choosen_icv1" "-->\t" "TTL:""${latency2}" " | [$status2]" "\r"
     echo -e "\n\r";
     
 done
