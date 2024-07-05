@@ -52,7 +52,7 @@ do
                 latency=$(ping -c $pkts "${target_IP}" | grep -i 'rtt' | cut -d/ -f5 2> /dev/null)
                 echo "${latency}"
                 ;;
-            MINGW*|CYGWIN*)
+            MINGW*|CYGWIN*|MSYS*)
                 latency=$(ping -n $pkts "${target_IP}" | tail -n 1 | cut -d" " -f13 | grep -Eo "[0-9]{1,}" 2> /dev/null)
                 echo "${latency}"
                 ;;
