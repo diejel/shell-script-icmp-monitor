@@ -1,5 +1,5 @@
 #!/bin/bash
-clear
+clear;
 #------ SECTION DEVICES 001-008 [HQ DEVICES]--------------
 DEVICE001=( 8.8.8.8 8.8.4.4 )
 DEVICE002=( 200.48.225.130 200.48.225.146 )
