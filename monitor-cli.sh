@@ -10,9 +10,9 @@ DEVICE006=( 186.194.224.82 177.43.35.247 )
 DEVICE007=( 177.159.232.52 177.131.114.86 )
 DEVICE008=( 200.150.112.58 138.36.1.14 )
 
-DEVICES=( ${DEVICE001[@]} ${DEVICE002[@]} ${DEVICE003[@]} ${DEVICE004[@]} ${DEVICE005[@]} ${DEVICE006[@]} ${DEVICE007[@]} ${DEVICE008[@]} )
-DEVICES_NAME=( "DEVICE001" , "DEVICE002" , "DEVICE003" , "DEVICE004" ,  "DEVICE005" , "DEVICE006" , "DEVICE007" , "DEVICE008" )
-DEVICES_NAME_FULL=( "Descr. DEVICE001" , "Desc. DEVICE002" , "Desc. DEVICE003" , "Desc. DEVICE004" , "Desc. DEVICE005" , "Desc. DEVICE006" , "Desc. DEVICE007" , "Desc. DEVICE008" )
+DEVICES=( "${DEVICE001[@]}" "${DEVICE002[@]}" "${DEVICE003[@]}" "${DEVICE004[@]}" "${DEVICE005[@]}" "${DEVICE006[@]}" "${DEVICE007[@]}" "${DEVICE008[@]}" )
+DEVICES_NAME=( "DEVICE001","DEVICE002", "DEVICE003", "DEVICE004", "DEVICE005", "DEVICE006", "DEVICE007", "DEVICE008" )
+DEVICES_NAME_FULL=( "Descr. DEVICE001", "Desc. DEVICE002", "Desc. DEVICE003",  "Desc. DEVICE004", "Desc. DEVICE005", "Desc. DEVICE006", "Desc. DEVICE007", "Desc. DEVICE008" )
 
 #---- ----- SECTION DEVICE009 [Branch Office 1]----------------------
 DEVICE009=( 1.1.1.1 8.8.8.8 )
@@ -29,11 +29,11 @@ bold="\e[1m";green="\e[92m";yellow="\e[93m";red="\e[91m";alarm_bg="\e[41m";blkn=
 let "lim_vg = 70";let "lim_vm = 90";let "lim_vw = 200";i_c=0;time_ip_out=0;pkts=2;
 
 ping_print(){ 
-vv1=$1; indirect_var1=${vv1}[@]; let count1=$( echo "${!indirect_var1}" | wc -w );
-vv2=$2; indirect_var2=${vv2}[@]; let count2=$( echo "${!indirect_var2}" | wc -w );
-vv3=$3; indirect_var3=${vv3}[@]; let count3=$( echo "${!indirect_var3}" | wc -w );
+vv1=$1; indirect_var1="${vv1}[@]"; let count1=$( echo "${!indirect_var1}" | wc -w );
+vv2=$2; indirect_var2="${vv2}[@]"; let count2=$( echo "${!indirect_var2}" | wc -w );
+vv3=$3; indirect_var3="${vv3}[@]"; let count3=$( echo "${!indirect_var3}" | wc -w );
 
-for (( i=1;i <=$count1 ; i+=2 ))
+for (( i=1;i <=${count1} ; i+=2 ))
 do
     #echo -ne '\007' (To make a sound [uncomment] )
     ((i_inc = i + 1)); ((i_v2 = i_inc/2)); ((i_v3 = i_v2))
@@ -67,24 +67,24 @@ do
     function grade_latency(){
         lat=$1
         if [ -n "${lat}" ]; then
-            status="OK"
+            status="[OK]"
         else
-            status="DOWN"
-            represent_status=" $nclr $blkn $alarm_bg [Fora do Ar] $nclr"
+            status="[DOWN]"
+            represent_status=" $nclr $blkn $alarm_bg [NO RESPONSE] $nclr"
             echo -e "${represent_status} ${status}"
             return
         fi
         if ((  "${lat}" < "${lim_vg}"  )) ; then
-            status="OK"
-            represent_status=" $nclr $green $lat ms $nclr ";
+            status="[OK]"
+            represent_status=" $nclr $green [ $lat ms ] $nclr ";
             echo -e "${represent_status} ${status}"
         elif (( "${lat}" > "${lim_vg}" && "${lat}" <= "${lim_vm}" )); then
-            status="WARNING"
-            represent_status="$nclr $yellow $lat ms $nclr";
+            status="[WARNING]"
+            represent_status="$nclr [ $yellow $lat ms ] $nclr";
             echo -e "${represent_status} ${status}"
         elif ((  "${lat}" > "${lim_vm}" )); then
-            status="CRITICAL"
-            represent_status=" $nclr $red $lat ms $nclr ";
+            status="[CRITICAL]"
+            represent_status=" $nclr  $red [ $lat ms ] $nclr ";
             echo -e "${represent_status} ${status}"
         fi
     }
@@ -95,7 +95,7 @@ do
 
     
     ((bulet = i_inc/2)); echo -e "Con-status: $value_choosen_iv2\r";
-    echo -e " $bulet)\t$value_choosen_iv3 : " "$value_choosen_iv1" "-->\t" "TTL:""${latency1}" " | [$status1]""\t" "$value_choosen_icv1" "-->\t" "TTL:""${latency2}" " | [$status2]" "\r"
+    echo -e " $bulet)\t$value_choosen_iv3 : " "$value_choosen_iv1" "-->\t" "TTL:""${latency1}" " $status1""\t|" "$value_choosen_icv1" "-->\t|" "TTL:""${latency2}" " $status2" "\r"
     echo -e "\n\r";
     
 done
