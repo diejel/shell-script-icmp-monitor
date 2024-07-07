@@ -1,0 +1,12 @@
+# Ensure all text files use LF line endings in the repository to avoid issues on Unix-like systems.
+* text=auto eol=lf
+
+# Treat all .sh files as text and ensure they have LF line endings on checkout.
+*.sh text eol=lf
+
+# Ensure that binary files are treated as such to avoid corrupting them through line ending normalization.
+*.png binary
+*.jpg binary
+*.gif binary
+
+# Custom attributes for specific needs, like diff or merge options, can also be defined here.
