@@ -29,9 +29,9 @@ bold="\e[1m";green="\e[92m";yellow="\e[93m";red="\e[91m";alarm_bg="\e[41m";blkn=
 ((lim_vg = 70));((lim_vm = 90));((lim_vw = 200));i_c=0;time_ip_out=0;pkts=2;
 
 ping_print(){ 
-vv1=$1; indirect_var1="${vv1}[@]"; let count1=$( echo "${!indirect_var1}" | wc -w );
-vv2=$2; indirect_var2="${vv2}[@]"; let count2=$( echo "${!indirect_var2}" | wc -w );
-vv3=$3; indirect_var3="${vv3}[@]"; let count3=$( echo "${!indirect_var3}" | wc -w );
+vv1=$1; indirect_var1="${vv1}[@]"; count1=$( echo "${!indirect_var1}" | wc -w | xargs);
+vv2=$2; indirect_var2="${vv2}[@]"; count2=$( echo "${!indirect_var2}" | wc -w | xargs);
+vv3=$3; indirect_var3="${vv3}[@]"; count3=$( echo "${!indirect_var3}" | wc -w | xargs);
 
 for (( i=1;i <=${count1} ; i+=2 ))
 do
