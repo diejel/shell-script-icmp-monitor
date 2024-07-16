@@ -26,7 +26,7 @@ DEVICE010_NAME_FULL=( "DEVICE010" )
 
 #----------- Text Properties and visual effects ------------
 bold="\e[1m";green="\e[92m";yellow="\e[93m";red="\e[91m";alarm_bg="\e[41m";blkn="\e[5m";nclr="\e[0m";
-let "lim_vg = 70";let "lim_vm = 90";let "lim_vw = 200";i_c=0;time_ip_out=0;pkts=2;
+((lim_vg = 70));((lim_vm = 90));((lim_vw = 200));i_c=0;time_ip_out=0;pkts=2;
 
 ping_print(){ 
 vv1=$1; indirect_var1="${vv1}[@]"; let count1=$( echo "${!indirect_var1}" | wc -w );
