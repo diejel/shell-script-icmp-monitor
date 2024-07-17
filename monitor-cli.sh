@@ -26,18 +26,19 @@ DEVICE010_NAME_FULL=( "DEVICE010" )
 
 #----------- Text Properties and visual effects ------------
 bold="\e[1m";green="\e[92m";yellow="\e[93m";red="\e[91m";alarm_bg="\e[41m";blkn="\e[5m";nclr="\e[0m";
-((lim_vg = 70));((lim_vm = 90));((lim_vw = 200));i_c=0;time_ip_out=0;pkts=2;
+((lim_vg = 70));((lim_vm = 90));((lim_vw = 200));pkts=2;
 
 ping_print(){ 
 vv1=$1; indirect_var1="${vv1}[@]"; count1=$( echo "${!indirect_var1}" | wc -w | xargs);
 vv2=$2; indirect_var2="${vv2}[@]"; 
 vv3=$3; indirect_var3="${vv3}[@]"; 
 
-for (( i=1;i <=${count1} ; i+=2 ))
+for (( i=1;i <="$count1" ; i+=2 ))
 do
     #echo -ne '\007' (To make a sound [uncomment] )
     ((i_inc = i + 1)); ((i_v2 = i_inc/2)); ((i_v3 = i_v2))
-    value_choosen_iv1=$(echo "${!indirect_var1}" | cut -d" " -f$i); value_choosen_icv1=$(echo "${!indirect_var1}" | cut -d" " -f$i_inc);
+    value_choosen_iv1=$(echo "${!indirect_var1}" | cut -d" " -f$i);
+    value_choosen_icv1=$(echo "${!indirect_var1}" | cut -d" " -f$i_inc);
 	value_choosen_iv2=$(echo "${!indirect_var2}" | cut -d, -f$i_v2); 
     value_choosen_iv3=$(echo "${!indirect_var3}" | cut -d, -f$i_v3);
     		
@@ -88,8 +89,8 @@ do
     }
 
 
-    read latency1 status1 <<< "$(grade_latency "${lat1}")"
-    read latency2 status2 <<< "$(grade_latency "${lat2}")"
+    read -r latency1 status1 <<< "$(grade_latency "${lat1}")"
+    read -r latency2 status2 <<< "$(grade_latency "${lat2}")"
 
     
     ((bulet = i_inc/2)); echo -e "Con-status: $value_choosen_iv2\r";
