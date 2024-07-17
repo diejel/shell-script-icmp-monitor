@@ -30,8 +30,8 @@ bold="\e[1m";green="\e[92m";yellow="\e[93m";red="\e[91m";alarm_bg="\e[41m";blkn=
 
 ping_print(){ 
 vv1=$1; indirect_var1="${vv1}[@]"; count1=$( echo "${!indirect_var1}" | wc -w | xargs);
-vv2=$2; indirect_var2="${vv2}[@]"; count2=$( echo "${!indirect_var2}" | wc -w | xargs);
-vv3=$3; indirect_var3="${vv3}[@]"; count3=$( echo "${!indirect_var3}" | wc -w | xargs);
+vv2=$2; indirect_var2="${vv2}[@]"; 
+vv3=$3; indirect_var3="${vv3}[@]"; 
 
 for (( i=1;i <=${count1} ; i+=2 ))
 do
@@ -39,10 +39,8 @@ do
     ((i_inc = i + 1)); ((i_v2 = i_inc/2)); ((i_v3 = i_v2))
     value_choosen_iv1=$(echo "${!indirect_var1}" | cut -d" " -f$i); value_choosen_icv1=$(echo "${!indirect_var1}" | cut -d" " -f$i_inc);
 	value_choosen_iv2=$(echo "${!indirect_var2}" | cut -d, -f$i_v2); 
-    #value_choosen_icv2=$(echo "${!indirect_var2}" | cut -d, -f$i_inc);
     value_choosen_iv3=$(echo "${!indirect_var3}" | cut -d, -f$i_v3);
-    # value_choosen_icv3=$(echo "${!indirect_var3}" | cut -d, -f$i_inc);
-		
+    		
 	# ----------Latencies mean calculations ----------
 
     function get_latency_depending_os(){
